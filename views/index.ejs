@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskFlow - Modern To-Do App</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1><i class="fas fa-tasks"></i> TaskFlow</h1>
+      <p>Organize your life, one task at a time</p>
+    </div>
+
+    <!-- Stats Dashboard -->
+    <div class="stats">
+      <div class="stat-card">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="lucide lucide-clock-alert-icon lucide-clock-alert">
+          <path d="M12 6v6l4 2" />
+          <path d="M20 12v5" />
+          <path d="M20 21h.01" />
+          <path d="M21.25 8.2A10 10 0 1 0 16 21.16" />
+        </svg>
+        <div class="number">
+          <%= overdueCount %>
+        </div>
+        <div class="label">Overdue</div>
+      </div>
+      <div class="stat-card">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="lucide lucide-calendar-days-icon lucide-calendar-days">
+          <path d="M8 2v4" />
+          <path d="M16 2v4" />
+          <rect width="18" height="18" x="3" y="4" rx="2" />
+          <path d="M3 10h18" />
+          <path d="M8 14h.01" />
+          <path d="M12 14h.01" />
+          <path d="M16 14h.01" />
+          <path d="M8 18h.01" />
+          <path d="M12 18h.01" />
+          <path d="M16 18h.01" />
+        </svg>
+        <div class="number">
+          <%= dueTodayCount %>
+        </div>
+        <div class="label">Due Today</div>
+      </div>
+      <div class="stat-card">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="lucide lucide-clock-fading-icon lucide-clock-fading">
+          <path d="M12 2a10 10 0 0 1 7.38 16.75" />
+          <path d="M12 6v6l4 2" />
+          <path d="M2.5 8.875a10 10 0 0 0-.5 3" />
+          <path d="M2.83 16a10 10 0 0 0 2.43 3.4" />
+          <path d="M4.636 5.235a10 10 0 0 1 .891-.857" />
+          <path d="M8.644 21.42a10 10 0 0 0 7.631-.38" />
+        </svg>
+        <div class="number">
+          <%= pending.length %>
+        </div>
+        <div class="label">Pending</div>
+      </div>
+      <div class="stat-card">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="lucide lucide-circle-check-icon lucide-circle-check">
+          <circle cx="12" cy="12" r="10" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+        <div class="number">
+          <%= completed.length %>
+        </div>
+        <div class="label">Completed</div>
+      </div>
+    </div>
+
+    <!-- Add Task Form -->
+    <div class="add-task-form">
+      <h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="lucide lucide-circle-plus-icon lucide-circle-plus">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M8 12h8" />
+          <path d="M12 8v8" />
+        </svg> Add New Task</h3>
+      <form class="form-grid" method="POST" action="/add">
+        <div class="form-group">
+          <label>Task Name</label>
+          <input type="text" name="text" placeholder="Enter task description" required>
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <input type="text" name="target" placeholder="Work, Study, Personal" required>
+        </div>
+        <div class="form-group">
+          <label>Due Date</label>
+          <input type="date" name="dueDate" required>
+        </div>
+        <button type="submit" class="btn btn-primary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-circle-plus-icon lucide-circle-plus">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M8 12h8" />
+            <path d="M12 8v8" />
+          </svg> Add Task
+        </button>
+      </form>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <div class="filter-group">
+        <strong><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-arrow-down-up-icon lucide-arrow-down-up">
+            <path d="m3 16 4 4 4-4" />
+            <path d="M7 20V4" />
+            <path d="m21 8-4-4-4 4" />
+            <path d="M17 4v16" />
+          </svg> Sort by:</strong>
+        <div class="filter-links">
+          <a href="?sort=created&target=<%= filterTarget %>" class="<%= sortBy === 'created' ? 'active' : '' %>">Created
+            Date</a>
+          <a href="?sort=due&target=<%= filterTarget %>" class="<%= sortBy === 'due' ? 'active' : '' %>">Due Date</a>
+        </div>
+      </div>
+      <div class="filter-group">
+        <strong><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-funnel-icon lucide-funnel">
+            <path
+              d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z" />
+          </svg> Filter:</strong>
+        <div class="filter-links">
+          <a href="?sort=<%= sortBy %>&target=all" class="<%= filterTarget === 'all' ? 'active' : '' %>">All</a>
+          <a href="?sort=<%= sortBy %>&target=work" class="<%= filterTarget === 'work' ? 'active' : '' %>">Work</a>
+          <a href="?sort=<%= sortBy %>&target=study" class="<%= filterTarget === 'study' ? 'active' : '' %>">Study</a>
+          <a href="?sort=<%= sortBy %>&target=personal"
+            class="<%= filterTarget === 'personal' ? 'active' : '' %>">Personal</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pending Tasks -->
+    <div class="task-section">
+      <div class="section-header">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="red"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="lucide lucide-clock-fading-icon lucide-clock-fading">
+          <path d="M12 2a10 10 0 0 1 7.38 16.75" />
+          <path d="M12 6v6l4 2" />
+          <path d="M2.5 8.875a10 10 0 0 0-.5 3" />
+          <path d="M2.83 16a10 10 0 0 0 2.43 3.4" />
+          <path d="M4.636 5.235a10 10 0 0 1 .891-.857" />
+          <path d="M8.644 21.42a10 10 0 0 0 7.631-.38" />
+        </svg>
+        <span>Pending Tasks</span>
+      </div>
+      <div class="task-list">
+        <% if (pending.length===0) { %>
+          <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="lucide lucide-clock-fading-icon lucide-clock-fading">
+              <path d="M12 2a10 10 0 0 1 7.38 16.75" />
+              <path d="M12 6v6l4 2" />
+              <path d="M2.5 8.875a10 10 0 0 0-.5 3" />
+              <path d="M2.83 16a10 10 0 0 0 2.43 3.4" />
+              <path d="M4.636 5.235a10 10 0 0 1 .891-.857" />
+              <path d="M8.644 21.42a10 10 0 0 0 7.631-.38" />
+            </svg>
+            <p>No pending tasks! Great job!</p>
+          </div>
+          <% } else { %>
+            <% pending.forEach((task, index)=> {
+              const originalIndex = [...pending, ...completed].indexOf(task);
+              const today = new Date().toISOString().split('T')[0];
+              const dueDate = new Date(task.dueDate);
+              const todayDate = new Date(today);
+              const diffTime = dueDate - todayDate;
+              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+              let taskClass = 'task-item';
+              let countdownClass = 'countdown';
+              let countdownText = '';
+
+              if (diffDays < 0) { taskClass +=' overdue' ; countdownClass +=' overdue' ;
+                countdownText=`${Math.abs(diffDays)} day${Math.abs(diffDays)> 1 ? 's' : ''} overdue`;
+                } else if (diffDays === 0) {
+                taskClass += ' due-today';
+                countdownClass += ' due-today';
+                countdownText = 'Due today';
+                } else {
+                countdownClass += ' upcoming';
+                countdownText = `${diffDays} day${diffDays > 1 ? 's' : ''} left`;
+                }
+                %>
+                <div class="<%= taskClass %>">
+                  <div class="task-content">
+                    <div class="task-title">
+                      <%= task.text %>
+                    </div>
+                    <div class="task-meta">
+                      <span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-tag-icon lucide-tag">
+                                    <path
+                                        d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z" />
+                                    <circle cx="7.5" cy="7.5" r=".5" fill="currentColor" />
+                                </svg>
+                        <%= task.target %>
+                      </span>
+                      <span> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="lucide lucide-calendar-days-icon lucide-calendar-days">
+          <path d="M8 2v4" />
+          <path d="M16 2v4" />
+          <rect width="18" height="18" x="3" y="4" rx="2" />
+          <path d="M3 10h18" />
+          <path d="M8 14h.01" />
+          <path d="M12 14h.01" />
+          <path d="M16 14h.01" />
+          <path d="M8 18h.01" />
+          <path d="M12 18h.01" />
+          <path d="M16 18h.01" />
+        </svg>Due: <%= task.dueDate %></span>
+                      <span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      class="lucide lucide-circle-plus-icon lucide-circle-plus">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M8 12h8" />
+                      <path d="M12 8v8" />
+                    </svg> Created: <%= task.createdAt %></span>
+                    </div>
+                    <div class="<%= countdownClass %>">
+                      <% if (diffDays < 0) { %>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-triangle-alert-icon lucide-triangle-alert"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                        <% } else if (diffDays===0) { %>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell-icon lucide-bell"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg>
+                          <% } else { %>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="lucide lucide-clock-fading-icon lucide-clock-fading">
+              <path d="M12 2a10 10 0 0 1 7.38 16.75" />
+              <path d="M12 6v6l4 2" />
+              <path d="M2.5 8.875a10 10 0 0 0-.5 3" />
+              <path d="M2.83 16a10 10 0 0 0 2.43 3.4" />
+              <path d="M4.636 5.235a10 10 0 0 1 .891-.857" />
+              <path d="M8.644 21.42a10 10 0 0 0 7.631-.38" />
+            </svg>
+                            <% } %>
+                              <%= countdownText %>
+                    </div>
+                    <div class="task-actions">
+                      <form method="POST" action="/toggle/<%= originalIndex %>" style="display: inline;">
+                        <button type="submit" class="btn btn-success">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-square-check-big-icon lucide-square-check-big">
+                            <path d="M21 10.656V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12.344" />
+                            <path d="m9 11 3 3L22 4" />
+                          </svg>
+                        </button>
+                      </form>
+                      <a href="/edit/<%= originalIndex %>" class="btn btn-info">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                          class="lucide lucide-file-pen-line-icon lucide-file-pen-line">
+                          <path
+                            d="m18 5-2.414-2.414A2 2 0 0 0 14.172 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2" />
+                          <path
+                            d="M21.378 12.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z" />
+                          <path d="M8 18h1" />
+                        </svg>
+                      </a>
+                      <form method="POST" action="/delete/<%= originalIndex %>" style="display: inline;"
+                        onsubmit="return confirm('Are you sure you want to delete this task?')">
+                        <button type="submit" class="btn btn-danger">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-trash2-icon lucide-trash-2">
+                            <path d="M3 6h18" />
+                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                            <line x1="10" x2="10" y1="11" y2="17" />
+                            <line x1="14" x2="14" y1="11" y2="17" />
+                          </svg>
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <% }) %>
+                  <% } %>
+      </div>
+    </div>
+
+    <!-- Completed Tasks -->
+    <% if (completed.length> 0) { %>
+      <div class="task-section">
+        <div class="section-header">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-circle-check-icon lucide-circle-check">
+            <circle cx="12" cy="12" r="10" />
+            <path d="m9 12 2 2 4-4" />
+          </svg>
+          <span>Completed Tasks</span>
+        </div>
+        <div class="task-list">
+          <% completed.forEach((task, index)=> {
+            const originalIndex = [...pending, ...completed].indexOf(task);
+            %>
+            <div class="task-item completed">
+              <div class="task-content">
+                <div class="task-title">
+                  <%= task.text %>
+                </div>
+                <div class="task-meta">
+                  <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      class="lucide lucide-tag-icon lucide-tag">
+                      <path
+                        d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z" />
+                      <circle cx="7.5" cy="7.5" r=".5" fill="currentColor" />
+                    </svg>
+                    <%= task.target %>
+                  </span>
+                  <span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      class="lucide lucide-calendar-days-icon lucide-calendar-days">
+                      <path d="M8 2v4" />
+                      <path d="M16 2v4" />
+                      <rect width="18" height="18" x="3" y="4" rx="2" />
+                      <path d="M3 10h18" />
+                      <path d="M8 14h.01" />
+                      <path d="M12 14h.01" />
+                      <path d="M16 14h.01" />
+                      <path d="M8 18h.01" />
+                      <path d="M12 18h.01" />
+                      <path d="M16 18h.01" />
+                    </svg></i> Due: <%= task.dueDate %></span>
+                  <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      class="lucide lucide-circle-plus-icon lucide-circle-plus">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M8 12h8" />
+                      <path d="M12 8v8" />
+                    </svg>Created: <%= task.createdAt %></span>
+                </div>
+                <div class="countdown">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="#10b91b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-square-check-big-icon lucide-square-check-big">
+                    <path d="M21 10.656V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12.344" />
+                    <path d="m9 11 3 3L22 4" />
+                  </svg>
+                </div>
+                <div class="task-actions">
+                  <form method="POST" action="/toggle/<%= originalIndex %>" style="display: inline;">
+                    <button type="submit" class="btn btn-warning">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-undo-icon lucide-undo">
+                        <path d="M3 7v6h6" />
+                        <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" />
+                      </svg>
+                    </button>
+                  </form>
+                  <a href="/edit/<%= originalIndex %>" class="btn btn-info">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                      class="lucide lucide-file-pen-line-icon lucide-file-pen-line">
+                      <path
+                        d="m18 5-2.414-2.414A2 2 0 0 0 14.172 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2" />
+                      <path
+                        d="M21.378 12.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z" />
+                      <path d="M8 18h1" />
+                    </svg>
+                  </a>
+                  <form method="POST" action="/delete/<%= originalIndex %>" style="display: inline;"
+                    onsubmit="return confirm('Are you sure you want to delete this task?')">
+                    <button type="submit" class="btn btn-danger">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-trash2-icon lucide-trash-2">
+                        <path d="M3 6h18" />
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                        <line x1="10" x2="10" y1="11" y2="17" />
+                        <line x1="14" x2="14" y1="11" y2="17" />
+                      </svg>
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <% }) %>
+        </div>
+      </div>
+      <% } %>
+  </div>
+
+  <script src="/script.js"></script>
+</body>
+
+</html>

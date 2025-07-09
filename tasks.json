@@ -1,0 +1,30 @@
+[
+  {
+    "text": "React",
+    "target": "Study",
+    "dueDate": "2025-07-08",
+    "completed": false,
+    "createdAt": "2025-07-07"
+  },
+  {
+    "text": "Trip",
+    "target": "Personal",
+    "dueDate": "2025-07-16",
+    "completed": false,
+    "createdAt": "2025-07-07"
+  },
+  {
+    "text": "Interview Prep",
+    "target": "Work",
+    "dueDate": "2025-07-09",
+    "completed": false,
+    "createdAt": "2025-07-07"
+  },
+  {
+    "text": "Express JS",
+    "target": "Study",
+    "dueDate": "2025-07-09",
+    "completed": true,
+    "createdAt": "2025-07-09"
+  }
+]
